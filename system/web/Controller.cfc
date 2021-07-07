@@ -616,7 +616,8 @@ component serializable="false" accessors="true" {
 		cacheTimeout           = "",
 		cacheLastAccessTimeout = "",
 		cacheSuffix            = "",
-		cacheProvider          = "template"
+		cacheProvider          = "template",
+        cacheIgnoreRc          = false
 	){
 		// Determine if we need to cache handler response
 		var isCachingOn = getSetting( "eventCaching" ) && arguments.cache;
@@ -633,7 +634,7 @@ component serializable="false" accessors="true" {
 			var cacheKey        = oEventURLFacade.buildBasicCacheKey(
 				keySuffix   = arguments.cacheSuffix,
 				targetEvent = arguments.event
-			) & hash( arguments.eventArguments.toString() );
+			) & ( !arguments.cacheIgnoreRc ? hash( arguments.eventArguments.toString() ) : '' );
 
 			// Test if entry found in cache, and return if found.
 			var data = oCache.get( cacheKey );

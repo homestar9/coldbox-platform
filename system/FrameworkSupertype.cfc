@@ -563,7 +563,8 @@ component serializable="false" accessors="true"{
 		cacheTimeout="",
 		cacheLastAccessTimeout="",
 		cacheSuffix="",
-		cacheProvider="template"
+		cacheProvider="template",
+        cacheIgnoreRC=false
 	){
 		return variables.controller.runEvent( argumentCollection=arguments );
 	}

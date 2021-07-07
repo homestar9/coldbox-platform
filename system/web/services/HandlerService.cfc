@@ -642,7 +642,8 @@ component extends="coldbox.system.web.services.BaseService" accessors="true" {
 			"lastAccessTimeout" : "",
 			"cacheKey"          : "",
 			"suffix"            : "",
-			"provider"          : "template"
+			"provider"          : "template",
+            "cacheIgnoreRc"     : false
 		};
 	}
 
@@ -677,6 +678,7 @@ component extends="coldbox.system.web.services.BaseService" accessors="true" {
 							""
 						);
 						mdEntry.provider = arguments.ehBean.getActionMetadata( "cacheProvider", "template" );
+                        mdEntry.cacheIgnoreRC = arguments.ehBean.getActionMetadata( "cacheIgnoreRC", false );
 
 						// Handler Event Cache Key Suffix, this is global to the event
 						if (

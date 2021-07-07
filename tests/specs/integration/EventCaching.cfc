@@ -21,16 +21,87 @@
 
 				expect( prc.cbox_eventCacheableEntry ).toBeStruct().toHaveKey( "provider" );
 				expect( prc.cbox_eventCacheableEntry.provider ).toBe( "template" );
-				// debug( prc.cbox_eventCacheableEntry );
+				debug( prc.cbox_eventCacheableEntry );
 			} );
 
 
 			it( "can do cached events with custom provider annotations", function(){
-				var event = execute( event = "eventcaching.withProvider", renderResults = true );
+				var event = execute( 
+                    event = "eventcaching.withProvider", 
+                    renderResults = true 
+                );
 				var prc   = event.getPrivateCollection();
 
 				expect( prc.cbox_eventCacheableEntry ).toBeStruct().toHaveKey( "provider" );
 				expect( prc.cbox_eventCacheableEntry.provider ).toBe( "default" );
+			} );
+
+            it( "can handle different RC collections", function(){
+				
+                // execute an event and specify a queryString variable
+                var event1 = execute( 
+                    event = "eventcaching", 
+                    renderResults = true,
+                    queryString="id=1" 
+                );
+				var prc1 = event1.getPrivateCollection();
+
+                expect( prc1.cbox_eventCacheableEntry ).toBeStruct().toHaveKey( "cacheIgnoreRc" );
+				expect( prc1.cbox_eventCacheableEntry.cacheIgnoreRc ).toBe( "false" );
+
+                // reset to simulate another request
+                setup();
+
+                var event2 = execute( 
+                    event = "eventcaching", 
+                    renderResults = true,
+                    queryString="id=2" 
+                );
+				
+                var prc2 = event2.getPrivateCollection();
+
+                expect( prc2.cbox_eventCacheableEntry ).toBeStruct().toHaveKey( "cacheIgnoreRc" );
+				expect( prc2.cbox_eventCacheableEntry.cacheIgnoreRc ).toBe( "false" );
+
+                // because we ignore the RC, the contextHashes should match
+                expect( prc1.data ).notToBe( prc2.data );
+
+			} );
+
+            it( "can ignore the rc scope", function(){
+				
+                // execute an event and specify a queryString variable
+                var event1 = execute( 
+                    event = "eventcaching.withIgnoreRc", 
+                    renderResults = true,
+                    queryString="id=1" 
+                );
+				var prc1 = event1.getPrivateCollection();
+
+                debug( prc1 );
+
+                expect( prc1.cbox_eventCacheableEntry ).toBeStruct().toHaveKey( "cacheIgnoreRc" );
+				expect( prc1.cbox_eventCacheableEntry.cacheIgnoreRc ).toBe( "true" );
+
+                // reset to simulate another request
+                setup();
+
+                var event2 = execute( 
+                    event = "eventcaching.withIgnoreRc", 
+                    renderResults = true,
+                    queryString="id=2" 
+                );
+				
+                var prc2 = event2.getPrivateCollection();
+
+                debug( prc2 );
+
+                expect( prc2.cbox_eventCacheableEntry ).toBeStruct().toHaveKey( "cacheIgnoreRc" );
+				expect( prc2.cbox_eventCacheableEntry.cacheIgnoreRc ).toBe( "true" );
+
+                // because we ignore the RC, the data should match
+                expect( prc1.data ).toBe( prc2.data );
+
 			} );
 
 			var formats = [ "json", "xml", "pdf" ];
